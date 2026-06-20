@@ -1,0 +1,55 @@
+const Product = require('../models/Product');
+
+// @desc    Fetch all products
+// @route   GET /api/products
+// @access  Public
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find({}).populate('farmer', 'farmName');
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Fetch single product
+// @route   GET /api/products/:id
+// @access  Public
+const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate('farmer', 'farmName');
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Create a product
+// @route   POST /api/products
+// @access  Private/Farmer
+const createProduct = async (req, res) => {
+  const { name, description, price, category, quantity, imageUrl } = req.body;
+
+  try {
+    const product = new Product({
+      name,
+      description,
+      price,
+      category,
+      quantity,
+      imageUrl,
+      farmer: req.user.farmer, // Assuming farmer ID is attached to user object
+    });
+
+    const createdProduct = await product.save();
+    res.status(201).json(createdProduct);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getProducts, getProductById, createProduct };
