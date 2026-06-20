@@ -23,6 +23,16 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  shippingAddress: {
+    type: String,
+    required: true,
+    default: 'Not Provided',
+  },
+  phone: {
+    type: String,
+    required: true,
+    default: 'Not Provided',
+  },
   status: {
     type: String,
     default: 'Placed',

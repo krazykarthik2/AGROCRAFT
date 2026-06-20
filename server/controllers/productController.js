@@ -35,6 +35,10 @@ const createProduct = async (req, res) => {
   const { name, description, price, category, quantity, imageUrl } = req.body;
 
   try {
+    if (!req.user.farmer) {
+      return res.status(400).json({ message: 'Farmer profile not found' });
+    }
+
     const product = new Product({
       name,
       description,
@@ -42,14 +46,70 @@ const createProduct = async (req, res) => {
       category,
       quantity,
       imageUrl,
-      farmer: req.user.farmer, // Assuming farmer ID is attached to user object
+      farmer: req.user.farmer._id,
     });
 
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-module.exports = { getProducts, getProductById, createProduct };
+// @desc    Update a product
+// @route   PUT /api/products/:id
+// @access  Private/Farmer
+const updateProduct = async (req, res) => {
+  const { name, description, price, category, quantity, imageUrl } = req.body;
+
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      if (req.user.role !== 'admin' && String(product.farmer) !== String(req.user.farmer?._id)) {
+        return res.status(401).json({ message: 'Not authorized to edit this product' });
+      }
+
+      product.name = name || product.name;
+      product.description = description || product.description;
+      product.price = price || product.price;
+      product.category = category || product.category;
+      product.quantity = quantity !== undefined ? quantity : product.quantity;
+      product.imageUrl = imageUrl || product.imageUrl;
+
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
+// @access  Private/Farmer
+const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      if (req.user.role !== 'admin' && String(product.farmer) !== String(req.user.farmer?._id)) {
+        return res.status(401).json({ message: 'Not authorized to delete this product' });
+      }
+
+      await product.deleteOne();
+      res.json({ message: 'Product removed successfully' });
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct };

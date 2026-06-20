@@ -7,6 +7,10 @@ import SignupPage from './pages/SignupPage';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import CustomerDashboard from './pages/CustomerDashboard';
+import FarmerDashboard from './pages/FarmerDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -18,6 +22,10 @@ function App() {
           <Route path="/products" element={<ProductListPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+          <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="*" element={<NotFoundPage />} />
@@ -27,4 +35,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
