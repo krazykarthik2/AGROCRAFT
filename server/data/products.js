@@ -13,7 +13,7 @@ const products = [
     price: 120,
     category: 'Grains',
     quantity: 500,
-    imageUrl: 'https://images.unsplash.com/photo-1536304997881-a372c179924b?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80',
   },
   {
     name: 'Fresh Tomatoes',
